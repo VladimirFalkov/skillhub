@@ -2,10 +2,70 @@
 
 {% block content %}
 <div class="content">
-    <p class="content_school-name">{{ course.school.name }}</p>
-    <h1 class="content_course-name">{{ course.name|safe }}</h1>
-    <p class="content_course-price">{{ course.price_formatted }}</p>
-    <p class="content_course-description">{{ course.description|safe }} Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis beatae pariatur aut cum molestias explicabo minus. Blanditiis nobis non ut beatae cumque esse laudantium. Dolore commodi aperiam tempora veniam necessitatibus. Possimus natus quas error officia accusamus eveniet quam eos quod est quaerat debitis molestias adipisci mollitia aliquam, ut eaque ab cum nostrum animi quia labore soluta molestiae, consequuntur impedit. Possimus placeat officiis aliquid quo repellat error ullam quibusdam. Natus, soluta consequuntur. Iste ipsam esse, excepturi quis rerum quisquam placeat et iusto animi cum ea veritatis quae aut voluptate perferendis, quasi maxime nihil repudiandae consequuntur laudantium voluptatibus quia quaerat eligendi ipsa?</p>
-    <a href="{{ course.affiliate_url }}" class="btn btn-primary main-button mt-3 content-button">Перейти на страницу курса</a>
+    <p><strong>
+        {% if course.school.rating %}
+        {{ rating_html|safe }}</strong>
+    {% endif %}
+    </p>
+    
+    
+    <p class="content_course-description">Курс в категориях:
+        {% for course_category in course.coursecategory_set.all %} 
+        {{ course_category.category.name }} <!-- Показать название категории курса -->
+    {% endfor %}
+
+    </p>
+    <div class="container">
+    <div class="row">
+        <div class='col-md-6'>
+          <h1 class="content_course-name">{{ course.name|safe }}</h1>
+          <p class="content_course-price">{{ course.price_formatted }}</p>
+          <p class="content_course-description">{{ course.description|safe }} Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis beatae pariatur aut cum molestias explicabo minus. Blanditiis nobis non ut beatae cumque esse laudantium. Dolore commodi aperiam tempora veniam necessitatibus. Possimus natus quas error officia accusamus eveniet quam eos quod est quaerat debitis molestias adipisci mollitia aliquam, ut eaque ab cum nostrum animi quia labore soluta molestiae, consequuntur impedit. Possimus placeat officiis aliquid quo repellat error ullam quibusdam. Natus, soluta consequuntur. Iste ipsam esse, excepturi quis rerum quisquam placeat et iusto animi cum ea veritatis quae aut voluptate perferendis, quasi maxime nihil repudiandae consequuntur laudantium voluptatibus quia quaerat eligendi ipsa?</p>
+        </div>
+        <div class='col-md-6'>
+          <h1 class="content_course-name">Отзывы о школе</h1>
+          <h5 class="content_course-name"><strong>Преимущества школы:</strong></h5>
+            {% if course.school.advantages.all %}
+              {% for advantage in course.school.advantages.all %}
+              <p class="content_course-description"><strong>{{ advantage.title }}: </strong> <!-- Показать преимущества школы -->
+                {{ advantage.description }}</p>
+              {% endfor %}
+            {% endif %}
+        
+
+            <h5 class="content_course-name"><strong>Недостатки школы:</strong></h5>
+          {% if course.school.advantages.all %}
+              {% for advantage in course.school.advantages.all %}
+              <p class="content_course-description"><strong>{{ advantage.title }}: </strong> <!-- Показать преимущества школы -->
+                {{ advantage.description }}</p>
+              {% endfor %}
+            {% endif %}    
+          </div>
+      </div>
+    </div>
+    <table class="table table-bordered">
+        <thead>
+          <tr>
+            
+            <th scope="col">продолжительность</th>
+           
+            <th scope="col">уровень</th>
+      
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            
+            <td>{{ duration_html }}</td>
+            
+            <td>{{ course.get_difficulty_display }}</td>
+            
+          </tr>
+          
+        </tbody>
+      </table>
+    
+
+  <a href="{{ course.affiliate_url }}" target="_blank" class="btn btn-primary main-button mt-3 content-button">Перейти на страницу курса</a>
 </div>
 {% endblock content %}

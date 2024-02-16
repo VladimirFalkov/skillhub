@@ -59,7 +59,7 @@ class SchoolAlias(models.Model):
         _('Отключен'),
         default=False,
     )
-
+    
     class Meta:
         verbose_name = _('Псевдоним школы')
         verbose_name_plural = _('Псевдонимы школ')
@@ -69,3 +69,57 @@ class SchoolAlias(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Advantages(models.Model):
+    title = models.CharField(
+        _('Заголовок'),
+        max_length=255,
+    )
+    description = models.TextField(
+        _('Описание'),
+    )
+    school = models.ForeignKey(
+        'schools.School',
+        models.CASCADE,
+        related_name='advantages',
+        verbose_name=_('Школа'),
+    )
+    order = models.IntegerField(
+        _('Порядок'),
+        default=0,
+    )
+
+    class Meta:
+        verbose_name = _('Преимущество школы')
+        verbose_name_plural = _('Преимущества школ')
+
+    def __str__(self):
+        return self.title
+
+
+class Disadvantages(models.Model):
+    title = models.CharField(
+        _('Заголовок'),
+        max_length=255,
+    )
+    description = models.TextField(
+        _('Описание'),
+    )
+    school = models.ForeignKey(
+        'schools.School',
+        models.CASCADE,
+        related_name='disadvantages',
+        verbose_name=_('Школа'),
+    )
+    order = models.IntegerField(
+        _('Порядок'),
+        default=0,
+    )
+
+    class Meta:
+        verbose_name = _('Недостаток школы')
+        verbose_name_plural = _('Недостатки школ')
+    
+    def __str__(self):
+        return self.title

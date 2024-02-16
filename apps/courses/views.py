@@ -1,5 +1,7 @@
 from django_filters.views import FilterView
+
 from django_tables2 import SingleTableView
+import pymorphy2
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -8,6 +10,7 @@ from rest_framework.views import APIView
 from django.db.models import Count, F
 from django.http import Http404
 from django.views.generic import DetailView
+from django.utils.html import format_html
 
 from core.models import AllCoursesPageConfig
 from courses.filters import CourseFilter
@@ -16,6 +19,9 @@ from courses.paginators import CustomPaginator
 from courses.serializers import CourseUploadSerializer
 from courses.tables import CourseTable
 from schools.models import School
+
+
+morph = pymorphy2.MorphAnalyzer(lang='ru')
 
 
 class CourseListView(FilterView, SingleTableView):
@@ -76,6 +82,32 @@ class CourseDetailView(DetailView):
     context_object_name = 'course'
     slug_url_kwarg = 'slug'
     template_name = 'courses/detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        course = self.get_object()
+
+        rating_points = course.school.rating or 0
+        rating_points_style = 'low-rating' if rating_points < 4 else 'high-rating'
+        rating_icon_style = 'low-rating-icon' if rating_points < 4 else 'high-rating-icon'
+        rating_icon = f'<span class="{rating_icon_style}"></span>'
+        rating_tag = f'<span class="{rating_points_style}">{rating_points}</span>'
+        rating = f'{rating_icon}{rating_tag}' if rating_points else ''
+        rating_html = format_html(f'{course.school.name}{rating}')
+
+        price_html = course.price_formatted
+
+        duration_type = dict(Course.DURATION_TYPE)[course.duration_type].lower()
+        duration_type = morph.parse(duration_type)[0]
+        duration_type = duration_type.make_agree_with_number(course.duration).word
+        duration_html = f'{course.duration} {duration_type}'
+
+        context['rating_html'] = rating_html
+        context['price_html'] = price_html
+        context['duration_html'] = duration_html
+
+        return context
+
 
 
 class UploadCourseAPIView(APIView):

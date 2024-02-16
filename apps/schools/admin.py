@@ -3,7 +3,7 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
 from core.admin import activate, deactivate
-from schools.models import School, SchoolAlias
+from schools.models import School, SchoolAlias, Advantages, Disadvantages
 
 
 class CategoryResource(resources.ModelResource):
@@ -21,4 +21,12 @@ class SchoolAdmin(ImportExportModelAdmin):
 
 @admin.register(SchoolAlias)
 class SchoolAliasAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Advantages)
+class AdvantagesAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Disadvantages)
+class DisadvantagesAdmin(admin.ModelAdmin):
     pass
